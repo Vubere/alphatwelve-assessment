@@ -8,13 +8,12 @@ interface AppLayoutProps {
 
 export default function AppLayout({ children }: AppLayoutProps): React.ReactElement {
   return (
-    <div>
-      <div className="lg:flex lg:flex-row lg:gap-0">
-        <SideNav />
-        <main className="w-full lg:px-[28px] lg:pt-[40px]">
-          {children}
-        </main>
-      </div>
+
+    <div className="sm:flex sm:flex-row sm:gap-0 text-black dark:text-white bg-white dark:bg-[#383544]">
+      <SideNav />
+      <main className="w-full lg:px-[28px] lg:pt-[40px]">
+        {children}
+      </main>
     </div>
   );
 }
