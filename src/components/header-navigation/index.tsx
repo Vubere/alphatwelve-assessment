@@ -8,12 +8,14 @@ import logo from "../../assets/icons/logo.svg";
 import { CancelIcon, EventsIcon, HamburgerIcon, HomeIcon, MessageIcon, NotificationIcon, ReportsIcon, SettingsIcon, SpeakIcon } from "..";
 import { Link, useLocation } from "react-router-dom";
 import useInnerWidth from "../../lib/hooks/use-window-width";
+import ROUTES from "../../lib/routes";
+import useDarkMode from "../../lib/hooks/use-darkmode";
 
 const SideNav: React.FC = () => {
-  const [showNav, setShowNav] = useState(true);
+  const [showNav, setShowNav] = useState(false);
   const [isNavOpen, setNavOpen] = useState(true);
   const [classToggle, setClassToggle] = useState(true);
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useDarkMode();
   const { isMobile } = useInnerWidth();
   const handleDrawerToggle = () => {
     setClassToggle(!classToggle);
@@ -31,46 +33,47 @@ const SideNav: React.FC = () => {
         title: 'Home',
         icon: <HomeIcon />,
         extraComponent: null,
-        link: '/',
+        link: ROUTES.home,
       },
       {
         title: 'Events',
         icon: <EventsIcon />,
         extraComponent: null,
-        link: '/events',
+        link: ROUTES.events,
       },
       {
         title: 'Speakers',
         icon: <SpeakIcon />,
         extraComponent: null,
-        link: '/speakers',
+        link: ROUTES.speakers,
       },
       {
         title: 'Reports',
         icon: <ReportsIcon />,
         extraComponent: null,
-        link: '/reports',
+        link: ROUTES.reports,
       },
       {
         title: 'Notifications',
         icon: <NotificationIcon />,
         extraComponent: <span className="badge">3</span>,
-        link: '/notifications',
+        link: ROUTES.notifications,
       },
       {
         title: 'Messages',
         icon: <MessageIcon />,
         extraComponent: <span className="badge">5</span>,
-        link: '/messages',
+        link: ROUTES.messages,
       },
       {
         title: 'Settings',
         icon: <SettingsIcon />,
         extraComponent: null,
-        link: '/settings',
+        link: ROUTES.settings,
       },
     ]
   ), []);
+
 
   useEffect(() => {
     if (darkMode) {
@@ -87,9 +90,9 @@ const SideNav: React.FC = () => {
 
 
   return (
-    <header className={`sm:p-[24px] h-[64px] sm:h-[100vh] sm:max-h-screen overflow-y-auto transition-width duration-500 ease-in-out ${classNavWidth} overflow-x-hidden nsm:min-w-[100vw] nsm:overflow-hidden nsm:border-b nsm:border-1 nsm:border-b-[#334155] nsm:border-opacity-25`}>
+    <header className={`sm:p-[24px] sm:pt-[15px] h-[64px] sm:h-[100vh] sm:max-h-screen overflow-y-auto transition-width duration-500 ease-in-out ${classNavWidth} overflow-x-hidden nsm:min-w-[100vw] nsm:overflow-hidden nsm:border-b nsm:border-1 nsm:border-b-[#334155] nsm:border-opacity-25`}>
       <div className="w-full nsm:p-[16px] nsm:h-[64px] flex justify-between items-center">
-        <h1 className={`text-xl font-bold ${classToggle ? "w-[64px]" : "w-[32px] min-w-[32px]"} h-[32px]  flex items-center justify-center relative sm:mb-[30px]`}>
+        <h1 className={`text-xl font-bold ${classToggle ? "w-[64px]" : "w-[32px] min-w-[32px]"} h-[32px]  flex items-center justify-center relative sm:mb-[25px]`}>
           <img src={classToggle ? fullLogo : logo} alt="logo" className="min-w-full" />
         </h1>
         <button className="sm:hidden block bg-none w-[24px] h-[24px] flex items-center justify-center text-[#ADA9BB] dark:text-black cursor-pointer" onClick={() => setShowNav(!showNav)}>
@@ -135,7 +138,7 @@ const SideNav: React.FC = () => {
               <p>Dark Mode</p>
             </div>
           }
-          <div className="flex gap-2 items-center  ml-[7px]">
+          <div className="flex gap-2 items-center  ml-[3px]">
             <img src={avatar} alt="home" className="w-[32px] h-[32px] min-w-[32px]" />
             {isNavOpen &&
               <div className="flex flex-col gap-1">
