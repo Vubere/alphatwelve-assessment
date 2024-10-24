@@ -108,7 +108,7 @@ const TableSection = () => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const classes = useStyles();
   const { isMobile } = useInnerWidth();
-  const headers = isMobile ? ["Event Name", "Status"] : ["Event Name", "Data", "Status", "Speaker"];
+  const headers = isMobile ? ["Event Name", "Status"] : ["Event Name", "Date", "Status", "Speaker"];
 
   const handleChangePage = (_, newPage) => {
     setPage(newPage);
