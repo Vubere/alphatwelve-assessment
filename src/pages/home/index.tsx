@@ -24,8 +24,8 @@ import SlideTwo from "../../assets/images/slide-2.png";
 import SlideThree from "../../assets/images/slide-3.png";
 import { ChevronLeft, ChevronRight, KeyboardArrowDown, KeyboardArrowRight } from "@mui/icons-material";
 import TablePagination from '@mui/material/TablePagination';
-import { makeStyles } from '@mui/styles';
 import { rows } from "../../lib/utils/fake-data";
+import { startCase } from "lodash";
 
 
 
@@ -94,19 +94,16 @@ export default function Home() {
     </div>
   )
 }
-const useStyles = makeStyles(() => ({
-  table: {
-    minWidth: "100%",
-  },
-  headerCell: {
-    backgroundColor: "transparent",
-    color: "black",
-  },
-}));
+
 const TableSection = () => {
+  const [tableFilter, setTableFilter] = useState({
+    search: "",
+    status: "",
+    date: "",
+  })
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
-  const classes = useStyles();
+  const [tableRows, setTableRows] = useState(rows);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const { isMobile } = useInnerWidth();
   const headers = isMobile ? ["Event Name", "Status"] : ["Event Name", "Date", "Status", "Speaker"];
 
@@ -119,15 +116,55 @@ const TableSection = () => {
     setPage(0);
   };
 
+  const handleInputChange = (e) => {
+    setTableFilter({
+      ...tableFilter,
+      [e.target.name]: e.target.value,
+    });
+  };
+  useEffect(() => {
+    if (tableRows.length) {
+      setPage(0);
+      let tempFilterRows = rows;
+      if (tableFilter.search)
+        tempFilterRows = tempFilterRows.filter(row => row.eventName.toLowerCase().includes(tableFilter.search.toLowerCase()) || row.speaker.toLowerCase().includes(tableFilter.search.toLowerCase()))
+      if (tableFilter.status)
+        tempFilterRows = tempFilterRows.filter(row => row.status === tableFilter.status)
+      setTableRows(tempFilterRows);
+    }
+  }, [tableFilter.search, tableRows.length, tableFilter.status])
+
   return (
-    <>
+    <div className="text-[#64748b] dark:text-[#fcf7ff]">
+      <div className="mb-3">
+        <div>
+          <div className="flex gap-2 flex-col sm:flex-row">
+            <div className="grid grid-cols-[28px_1fr] border h-[30px] w-full sm:max-w-[150px] ">
+              <span className="h-full w-full flex items-center justify-center">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M16.0417 16.0416L12.9167 12.9166M3.95834 9.16659C3.95834 6.2901 6.29019 3.95825 9.16668 3.95825C12.0432 3.95825 14.375 6.2901 14.375 9.16659C14.375 12.0431 12.0432 14.3749 9.16668 14.3749C6.29019 14.3749 3.95834 12.0431 3.95834 9.16659Z" stroke="#94A3B8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </span>
+              <input className="border-none outline-none w-full h-full placeholder:text-[#cb]" value={tableFilter.search} onChange={handleInputChange} name="search" placeholder="search..." />
+            </div>
+            <div className="border h-[30px] px-2 sm:max-w-[100px]">
+              <select className="border-none outline-none w-full h-full placeholder:text-[#cb]" value={tableFilter.status} onChange={handleInputChange} name="status">
+                <option value=""></option>
+                <option value="completed">Completed</option>
+                <option value="in progress">In progress</option>
+              </select>
+            </div>
+          </div>
+
+        </div>
+      </div>
       <TableContainer component={Paper}>
-        <Table className={classes.table}>
+        <Table className={`min-w-[100%]`}>
           <TableHead>
             <TableRow className="bg-[#f1f5f9] h-[]">
               {
                 headers.map((header, index) => (
-                  <TableCell key={index} className={classes.headerCell}>{header}</TableCell>
+                  <TableCell key={index} className={`min-w-[100%]`}>{header}</TableCell>
                 ))
               }
             </TableRow>
@@ -136,31 +173,46 @@ const TableSection = () => {
             {/* Table rows */}
             {
               isMobile ?
-                rows?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)?.map((row, i) => (
+                tableRows?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)?.map((row, i) => (
                   <EventRowMobile key={i} {...row} />
                 ))
-                : rows?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)?.map((row, i) => (
+                : tableRows?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)?.map((row, i) => (
                   <TableRow key={i}>
-                    <TableCell>{row.eventName}</TableCell>
+                    <TableCell className="w-auto">{row.eventName}</TableCell>
                     <TableCell>{row.date}</TableCell>
                     <TableCell>{row.speaker}</TableCell>
-                    <TableCell>{row.status}</TableCell>
+                    <TableCell><StatusDisplay status={row.status} /></TableCell>
                   </TableRow>
                 ))
             }
           </TableBody>
         </Table>
+        <TablePagination
+          rowsPerPageOptions={[10, 20, 30]}
+          component="div"
+          count={tableRows.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
       </TableContainer>
-      <TablePagination
-        rowsPerPageOptions={[10, 20, 30]}
-        component="div"
-        count={rows.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
-    </>
+
+    </div>
+  )
+}
+
+const StatusDisplay = ({ status }: { status: string }) => {
+  const classes = status === "completed" ? "text-[#10b981] bg-[#10b98155]" : "text-[#3b82f6] bg-[#3b82f655]";
+  return (
+    <span className={`${classes} flex  items-center nowrap whitespace-nowrap rounded-full justify-center w-[100px] h-[24px] min-w-[100px] text-[12px]`}>
+      <svg width="16" height="16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="8" cy="8" r="3" fill="currentColor" />
+      </svg>
+      <span className="block h-[16px]">
+        {startCase(status)}
+      </span>
+    </span>
   )
 }
 interface EventRowProps {
@@ -286,7 +338,7 @@ const Tile = ({
 }) => {
   const change = getPercentageChange(previousValue, currentValue);
   const ChangeIcon = change >= 0 ? (
-    <span className="text-[#10b981] flex items-center">
+    <span className="text-[#3b82f6] flex items-center">
       <img src={positiveIcon} width={16} height={16} className="max-w-[16px] max-h-[16px]" />
       <span className="text-[10px] leading-[120%]">+{change.toFixed(1)}%</span>
     </span>) : (

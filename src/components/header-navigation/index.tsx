@@ -24,7 +24,6 @@ const SideNav: React.FC = () => {
     }, classToggle ? 400 : 0);
   };
   const { pathname } = useLocation();
-  console.log(pathname)
   const classNavWidth = classToggle ? "w-[280px] nsm:w-[100vw]" : "w-[60px]";
   const toggleDarkMode = () => setDarkMode(prev => !prev);
   const sideNavItems = useMemo(() => (
@@ -81,17 +80,20 @@ const SideNav: React.FC = () => {
     } else {
       document.documentElement.classList.remove("dark");
     }
-
   }, [darkMode]);
 
   useEffect(() => {
     setShowNav(!isMobile)
+    setClassToggle(!isMobile)
+    if (isMobile) {
+      setNavOpen(true);
+    }
   }, [isMobile])
 
 
   return (
-    <header className={`sm:p-[24px] sm:pt-[15px] h-[64px] sm:h-[100vh] sm:max-h-screen overflow-y-auto transition-width duration-500 ease-in-out ${classNavWidth} overflow-x-hidden nsm:min-w-[100vw] nsm:overflow-hidden nsm:border-b nsm:border-1 nsm:border-b-[#334155] nsm:border-opacity-25`}>
-      <div className="w-full nsm:p-[16px] nsm:h-[64px] flex justify-between items-center">
+    <header className={`sm:p-[24px] sm:pt-[15px] h-[64px] sm:h-[100vh] sm:max-h-screen overflow-y-auto transition-width duration-500 ease-in-out ${classNavWidth} overflow-x-hidden nsm:min-w-[100vw] nsm:overflow-hidden ${!showNav ? "nsm:border-b nsm:border-1 nsm:border-b-[#334155] nsm:border-opacity-25" : ""}`}>
+      <div className={`w-full nsm:p-[16px] nsm:h-[64px] flex justify-between items-center relative z-[5]  ${showNav ? "nsm:border-b nsm:border-1 nsm:border-b-[#334155] nsm:border-opacity-25" : ""}`}>
         <h1 className={`text-xl font-bold ${classToggle ? "w-[64px]" : "w-[32px] min-w-[32px]"} h-[32px]  flex items-center justify-center relative sm:mb-[25px]`}>
           <img src={classToggle ? fullLogo : logo} alt="logo" className="min-w-full" />
         </h1>
@@ -100,7 +102,7 @@ const SideNav: React.FC = () => {
         </button>
       </div>
       <nav
-        className={`${isNavOpen ? "sm:min-w-[240px] text-[#8576ff] text-[#ADA9BB]" : "sm:min-w-[60px] text-[#334155]"} dark:text-white nsm:absolute z-[5] nsm:h-[calc(100vh-64px)] nsm:left-0 nsm:top-[65px] nsm:ease-in-out nsm:bg-white nsm:dark:bg-[#383544] nsm:bg-black nsm:pt-[16px] transition-all duration-1000 ease-in-out ${showNav ? "nsm:max-w-[100vw] nsm:w-[100vw]  nsm:px-[20px]" : "nsm:max-w-[0px] nsm:w-[0px] "} nsm:overflow-hidden sm:relative nsm:overflow-y-auto`}
+        className={`${isNavOpen ? "sm:min-w-[240px] text-[#8576ff] text-[#ADA9BB]" : "sm:min-w-[60px] text-[#334155]"} dark:text-white nsm:absolute z-[4] nsm:h-[100vh] nsm:left-0 nsm:top-0 pt-[81px] nsm:ease-in-out nsm:bg-white nsm:dark:bg-[#383544] nsm:bg-black transition-all duration-1000 ease-in-out ${showNav ? "nsm:max-w-[100vw] nsm:w-[100vw]  nsm:px-[20px]" : "nsm:max-w-[0px] nsm:w-[0px] "} nsm:overflow-hidden sm:relative nsm:overflow-y-auto`}
       >
         <ul className="flex flex-col items-start gap-3 ">
           {
@@ -121,13 +123,16 @@ const SideNav: React.FC = () => {
           }
 
         </ul>
-        <div className={`flex flex-col gap-2 mt-2 ${isNavOpen ? " min-w-[240px] nsm:min-w-0" : "min-w-[60px]"}`}>
-          <Tooltip title={isNavOpen ? "" : "Collapse"} placement="right" className="nsm:hidden">
-            <button onClick={handleDrawerToggle} className="bg-none flex gap-6 items-center w-[100px] ml-[6px] text-[#334155] dark:text-white" disabled={isNavOpen !== classToggle}>
-              {isNavOpen ? <KeyboardDoubleArrowLeft className="max-w-[50px] max-w-[20px] max-h-[20px]" /> : <KeyboardDoubleArrowRight className="max-w-[20px] max-h-[20px]" />}
-              {isNavOpen && <p className="text-[#334155] dark:text-white">Collapse</p>}
-            </button>
-          </Tooltip>
+        <div className={`flex flex-col gap-2 mt-2 w-full max-w-full`}>
+          <div className="max-w-full w-full">
+
+            <Tooltip title={isNavOpen ? "" : "Expand"} placement="right" className="nsm:hidden !w-full !max-w-full">
+              <button onClick={handleDrawerToggle} className={`bg-none flex gap-6 items-center ${isNavOpen ? "w-[100px]" : "w-[50px]"}!max-w-full ml-[6px] text-[#334155] dark:text-white`} disabled={isNavOpen !== classToggle}>
+                {isNavOpen ? <KeyboardDoubleArrowLeft className="max-w-[50px] max-w-[20px] max-h-[20px]" /> : <KeyboardDoubleArrowRight className="max-w-[20px] max-h-[20px]" />}
+                {isNavOpen && <p className="text-[#334155] dark:text-white">Collapse</p>}
+              </button>
+            </Tooltip>
+          </div>
 
           {
             isNavOpen &&
