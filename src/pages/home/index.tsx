@@ -2,7 +2,17 @@ import { InformationIcon } from "../../components";
 import { formatNumber, getPercentageChange } from "../../lib/utils";
 import positiveIcon from "../../assets/icons/statistics-up.png";
 import negativeIcon from "../../assets/icons/statistics-down.png";
-import { Tooltip } from "@mui/material";
+import {
+  Tooltip,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Collapse,
+} from "@mui/material";
 import BarChart from "../../components/chart/bar";
 import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css";
@@ -12,7 +22,12 @@ import { useEffect, useRef, useState } from "react";
 import SlideOne from "../../assets/images/slide-1.png";
 import SlideTwo from "../../assets/images/slide-2.png";
 import SlideThree from "../../assets/images/slide-3.png";
-import { ChevronLeft, ChevronRight } from "@mui/icons-material";
+import { ChevronLeft, ChevronRight, KeyboardArrowDown, KeyboardArrowRight } from "@mui/icons-material";
+import TablePagination from '@mui/material/TablePagination';
+import { makeStyles } from '@mui/styles';
+import { rows } from "../../lib/utils/fake-data";
+
+
 
 export default function Home() {
   const { isMobile } = useInnerWidth();
@@ -59,7 +74,7 @@ export default function Home() {
 
       <h2 className="text-[18px] leading-[17px] nsm:leading-[20px] sm:text-[22px] text-black dark:text-white mb-[12px] ">Event Registrations per month</h2>
       <div className="w-full grid grid-cols-1  lg:grid-cols-[52%_48%] gap-4 mb-[20px]">
-        <section className="w-full min-h-[290px] h-[290px] sm:min-h-[320px] sm:h-[320px] border p-[16px] md:p-[30px] dark:text-white">
+        <section className="w-full h-[260px] min-h-[260px] sm:min-h-[290px] sm:h-[290px] md:min-h-[320px] md:h-[320px] border p-[16px] md:p-[30px] dark:text-white">
           <BarChart chartData={{
             labels: barChartLabels,
             datasets: [
@@ -75,13 +90,120 @@ export default function Home() {
         <Carousel />
       </div>
       <h2 className="text-xl  text-[17px] sm:text-[22px] leading-[118%] sm:leading-[100%] text-black dark:text-white mb-[12px] sm:mb-[24px]">Events History</h2>
-      <section>
-
-      </section>
+      <TableSection />
     </div>
   )
 }
+const useStyles = makeStyles(() => ({
+  table: {
+    minWidth: "100%",
+  },
+  headerCell: {
+    backgroundColor: "transparent",
+    color: "black",
+  },
+}));
+const TableSection = () => {
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const classes = useStyles();
+  const { isMobile } = useInnerWidth();
+  const headers = isMobile ? ["Event Name", "Status"] : ["Event Name", "Data", "Status", "Speaker"];
 
+  const handleChangePage = (_, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  return (
+    <>
+      <TableContainer component={Paper}>
+        <Table className={classes.table}>
+          <TableHead>
+            <TableRow className="bg-[#f1f5f9] h-[]">
+              {
+                headers.map((header, index) => (
+                  <TableCell key={index} className={classes.headerCell}>{header}</TableCell>
+                ))
+              }
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {/* Table rows */}
+            {
+              isMobile ?
+                rows?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)?.map((row, i) => (
+                  <EventRowMobile key={i} {...row} />
+                ))
+                : rows?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)?.map((row, i) => (
+                  <TableRow key={i}>
+                    <TableCell>{row.eventName}</TableCell>
+                    <TableCell>{row.date}</TableCell>
+                    <TableCell>{row.speaker}</TableCell>
+                    <TableCell>{row.status}</TableCell>
+                  </TableRow>
+                ))
+            }
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <TablePagination
+        rowsPerPageOptions={[10, 20, 30]}
+        component="div"
+        count={rows.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
+    </>
+  )
+}
+interface EventRowProps {
+  eventName: string;
+  date: string;
+  speaker: string;
+  status: string;
+}
+
+const EventRowMobile: React.FC<EventRowProps> = ({ eventName, date, speaker, status }) => {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <>
+      <TableRow>
+        <td className="flex items-center">
+          <button
+            onClick={() => setOpen(!open)}
+            className="inline outline-none border-none bg-transparent"
+          >
+            {open ? <KeyboardArrowDown /> : <KeyboardArrowRight />}
+          </button>
+          <span className="inline-block min-w-full nowrap text-[14px]">{eventName}</span>
+        </td>
+        <td className="text-[14px]">
+          {status}
+        </td>
+      </TableRow>
+      <TableRow>
+        <td className="text-[14px]">
+          <Collapse in={open} timeout="auto" unmountOnExit>
+            {date}
+          </Collapse>
+        </td>
+        <td className="text-[14px]">
+          <Collapse in={open} timeout="auto" unmountOnExit>
+            {speaker}
+          </Collapse>
+        </td >
+      </TableRow >
+    </>
+  );
+};
 const Carousel = () => {
   const sliderRef = useRef<Slider>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
