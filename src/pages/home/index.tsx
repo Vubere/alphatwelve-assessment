@@ -10,7 +10,6 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
   Collapse,
 } from "@mui/material";
 import BarChart from "../../components/chart/bar";
@@ -123,15 +122,13 @@ const TableSection = () => {
     });
   };
   useEffect(() => {
-    if (tableRows.length) {
-      setPage(0);
-      let tempFilterRows = rows;
-      if (tableFilter.search)
-        tempFilterRows = tempFilterRows.filter(row => row.eventName.toLowerCase().includes(tableFilter.search.toLowerCase()) || row.speaker.toLowerCase().includes(tableFilter.search.toLowerCase()))
-      if (tableFilter.status)
-        tempFilterRows = tempFilterRows.filter(row => row.status === tableFilter.status)
-      setTableRows(tempFilterRows);
-    }
+    setPage(0);
+    let tempFilterRows = rows;
+    if (tableFilter.search)
+      tempFilterRows = tempFilterRows.filter(row => row.eventName.toLowerCase().includes(tableFilter.search.toLowerCase()) || row.speaker.toLowerCase().includes(tableFilter.search.toLowerCase()))
+    if (tableFilter.status)
+      tempFilterRows = tempFilterRows.filter(row => row.status === tableFilter.status)
+    setTableRows(tempFilterRows);
   }, [tableFilter.search, tableRows.length, tableFilter.status])
 
   return (
@@ -145,10 +142,10 @@ const TableSection = () => {
                   <path d="M16.0417 16.0416L12.9167 12.9166M3.95834 9.16659C3.95834 6.2901 6.29019 3.95825 9.16668 3.95825C12.0432 3.95825 14.375 6.2901 14.375 9.16659C14.375 12.0431 12.0432 14.3749 9.16668 14.3749C6.29019 14.3749 3.95834 12.0431 3.95834 9.16659Z" stroke="#94A3B8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
               </span>
-              <input className="border-none outline-none w-full h-full placeholder:text-[#cb]" value={tableFilter.search} onChange={handleInputChange} name="search" placeholder="search..." />
+              <input className="border-none outline-none w-full h-full placeholder:text-[#cbcdda] text-black dark:text-white bg-white dark:bg-[#383544]" value={tableFilter.search} onChange={handleInputChange} name="search" placeholder="search..." />
             </div>
             <div className="border h-[30px] px-2 sm:max-w-[100px]">
-              <select className="border-none outline-none w-full h-full placeholder:text-[#cbcdca]" value={tableFilter.status} onChange={handleInputChange} name="status" >
+              <select className="border-none outline-none w-full h-full text-black dark:text-white bg-white dark:bg-[#383544] placeholder:text-[#cbcdca]" value={tableFilter.status} onChange={handleInputChange} name="status" >
                 <option value=""></option>
                 <option value="completed">Completed</option>
                 <option value="in progress">In progress</option>
@@ -158,13 +155,13 @@ const TableSection = () => {
 
         </div>
       </div>
-      <TableContainer component={Paper}>
+      <TableContainer >
         <Table className={`min-w-[100%]`}>
           <TableHead>
-            <TableRow className="bg-[#f1f5f9] h-[]">
+            <TableRow className="bg-[#f1f5f9] dark:bg-[#484554] dark:text-white">
               {
                 headers.map((header, index) => (
-                  <TableCell key={index} className={`min-w-[100%]`}>{header}</TableCell>
+                  <TableCell key={index} className={`min-w-[100%] dark:text-white`}>{header}</TableCell>
                 ))
               }
             </TableRow>
@@ -177,11 +174,11 @@ const TableSection = () => {
                   <EventRowMobile key={i} {...row} />
                 ))
                 : tableRows?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)?.map((row, i) => (
-                  <TableRow key={i}>
-                    <TableCell className="w-auto">{row.eventName}</TableCell>
-                    <TableCell>{row.date}</TableCell>
-                    <TableCell>{row.speaker}</TableCell>
-                    <TableCell><StatusDisplay status={row.status} /></TableCell>
+                  <TableRow key={i} >
+                    <TableCell className="w-auto dark:text-white">{row.eventName}</TableCell>
+                    <TableCell className="dark:text-white">{row.date}</TableCell>
+                    <TableCell className="dark:text-white">{row.speaker}</TableCell>
+                    <TableCell ><StatusDisplay status={row.status} /></TableCell>
                   </TableRow>
                 ))
             }
@@ -190,6 +187,7 @@ const TableSection = () => {
         <TablePagination
           rowsPerPageOptions={[10, 20, 30]}
           component="div"
+          className="dark:text-white"
           count={tableRows.length}
           rowsPerPage={rowsPerPage}
           page={page}
@@ -241,7 +239,7 @@ const EventRowMobile: React.FC<EventRowProps> = ({ eventName, date, speaker, sta
           {status}
         </td>
       </TableRow>
-      <TableRow>
+      <TableRow >
         <td className="text-[14px]">
           <Collapse in={open} timeout="auto" unmountOnExit>
             {date}
@@ -275,7 +273,7 @@ const Carousel = () => {
       sliderRef.current?.slickPlay();
   }, [])
   return (
-    <section className=" w-full min-w-full h-[284px] md:h-[320px] max-h-[284px] md:max-h-[320px] overflow-hidden border relative">
+    <section className=" w-full min-w-full h-[284px] md:h-[320px] max-h-[284px] md:max-h-[320px] overflow-hidden  relative">
       <Slider
         autoPlay={true}
         autoplaySpeed={2000}
@@ -290,13 +288,13 @@ const Carousel = () => {
         ref={sliderRef}
         className="!relative !w-full !h-full "
       >
-        <section className=" w-full min-wfull h-[284px] md:h-[320px] border relative">
+        <section className=" w-full min-wfull h-[284px] md:h-[320px] relative">
           <img src={SlideOne} alt="slide-1" className="absolute top-0 left-0 w-full h-full object-cover z-10 no-repeat" />
         </section>
-        <section className=" w-full min-wfull h-[284px] md:h-[320px] border relative">
+        <section className=" w-full min-wfull h-[284px] md:h-[320px] relative">
           <img src={SlideTwo} alt="slide-2" className="absolute top-0 left-0 w-full h-full object-cover z-1" />
         </section>
-        <section className=" w-full min-wfull h-[284px] md:h-[320px] border relative">
+        <section className=" w-full min-wfull h-[284px] md:h-[320px] relative">
           <img src={SlideThree} alt="slide-3" className="absolute top-0 left-0 w-full h-full object-cover" />
         </section>
       </Slider>
