@@ -225,7 +225,7 @@ const EventRowMobile: React.FC<EventRowProps> = ({ eventName, date, speaker, sta
 
   return (
     <>
-      <TableRow>
+      <TableRow className={"text-[#334155] dark:text-white " + (open && "bg-gray-200 dark:bg-gray-600")}>
         <td className="flex items-center">
           <button
             onClick={() => setOpen(!open)}
@@ -233,14 +233,14 @@ const EventRowMobile: React.FC<EventRowProps> = ({ eventName, date, speaker, sta
           >
             {open ? <KeyboardArrowDown /> : <KeyboardArrowRight />}
           </button>
-          <span className="inline-block min-w-full nowrap text-[14px]">{eventName}</span>
+          <span className="inline-block max-w-full text-[14px] text-[#334155] dark:text-white py-1">{eventName}</span>
         </td>
         <td className="text-[14px]">
-          {status}
+          <StatusDisplay status={status} />
         </td>
       </TableRow>
-      <TableRow >
-        <td className="text-[14px]">
+      <TableRow className="bg-gray-100 dark:bg-gray-800 px-1">
+        <td className="text-[14px] px-2">
           <Collapse in={open} timeout="auto" unmountOnExit>
             {date}
           </Collapse>
@@ -336,9 +336,9 @@ const Tile = ({
 }) => {
   const change = getPercentageChange(previousValue, currentValue);
   const ChangeIcon = change >= 0 ? (
-    <span className="text-[#3b82f6] flex items-center">
+    <span className="text-[#10b981] flex items-center">
       <img src={positiveIcon} width={16} height={16} className="max-w-[16px] max-h-[16px]" />
-      <span className="text-[10px] leading-[120%]">+{change.toFixed(1)}%</span>
+      <span className="text-[10px] leading-[120%] !text-[#10b981]">+{change.toFixed(1)}%</span>
     </span>) : (
     <span className="text-[#f43f5e] flex items-center">
       <img src={negativeIcon} width={16} height={16} className="max-w-[16px] max-h-[16px]" />
