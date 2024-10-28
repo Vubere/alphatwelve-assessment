@@ -148,7 +148,7 @@ const TableSection = () => {
               <input className="border-none outline-none w-full h-full placeholder:text-[#cb]" value={tableFilter.search} onChange={handleInputChange} name="search" placeholder="search..." />
             </div>
             <div className="border h-[30px] px-2 sm:max-w-[100px]">
-              <select className="border-none outline-none w-full h-full placeholder:text-[#cb]" value={tableFilter.status} onChange={handleInputChange} name="status">
+              <select className="border-none outline-none w-full h-full placeholder:text-[#cbcdca]" value={tableFilter.status} onChange={handleInputChange} name="status" >
                 <option value=""></option>
                 <option value="completed">Completed</option>
                 <option value="in progress">In progress</option>
