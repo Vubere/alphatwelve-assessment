@@ -102,7 +102,7 @@ const SideNav: React.FC = () => {
         </button>
       </div>
       <nav
-        className={`${isNavOpen ? "sm:min-w-[240px] text-[#8576ff] text-[#ADA9BB]" : "sm:min-w-[60px] text-[#334155]"} dark:text-white nsm:absolute z-[4] nsm:h-[100vh] sm:h-[calc(100vh-64px)] nsm:left-0 nsm:top-0 pt-[81px] nsm:ease-in-out nsm:bg-white nsm:dark:bg-[#383544] nsm:bg-black transition-all duration-1000 ease-in-out ${showNav ? "nsm:max-w-[100vw] nsm:w-[100vw]  nsm:px-[20px]" : "nsm:max-w-[0px] nsm:w-[0px] "} nsm:overflow-hidden sm:relative nsm:overflow-y-auto`}
+        className={`${isNavOpen ? "sm:min-w-[240px] text-[#8576ff] text-[#ADA9BB]" : "sm:min-w-[60px] text-[#334155]"} dark:text-white nsm:absolute z-[4] nsm:h-[100vh] sm:h-auto nsm:left-0 nsm:top-0 nsm:pt-[81px] nsm:ease-in-out nsm:bg-white nsm:dark:bg-[#383544] nsm:bg-black transition-all duration-1000 ease-in-out ${showNav ? "nsm:max-w-[100vw] nsm:w-[100vw]  nsm:px-[20px]" : "nsm:max-w-[0px] nsm:w-[0px] "} nsm:overflow-hidden sm:relative nsm:overflow-y-auto`}
       >
         <ul className="flex flex-col items-start gap-3 ">
           {
