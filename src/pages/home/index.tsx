@@ -11,6 +11,8 @@ import {
   TableHead,
   TableRow,
   Collapse,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import BarChart from "../../components/chart/bar";
 import Slider from 'react-slick';
@@ -104,7 +106,7 @@ const TableSection = () => {
   const [tableRows, setTableRows] = useState(rows);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const { isMobile } = useInnerWidth();
-  const headers = isMobile ? ["Event Name", "Status"] : ["Event Name", "Date", "Status", "Speaker"];
+  const headers = isMobile ? ["Event Name", "Status"] : ["Event Name", "Date", "Speaker", "Status"];
 
   const handleChangePage = (_, newPage) => {
     setPage(newPage);
@@ -144,12 +146,13 @@ const TableSection = () => {
               </span>
               <input className="border-none outline-none w-full h-full placeholder:text-[#cbcdda] text-black dark:text-white bg-white dark:bg-[#383544]" value={tableFilter.search} onChange={handleInputChange} name="search" placeholder="search..." />
             </div>
-            <div className="border h-[30px] px-2 sm:max-w-[100px]">
-              <select className="border-none outline-none w-full h-full text-black dark:text-white bg-white dark:bg-[#383544] placeholder:text-[#cbcdca]" value={tableFilter.status} onChange={handleInputChange} name="status" >
-                <option value=""></option>
-                <option value="completed">Completed</option>
-                <option value="in progress">In progress</option>
-              </select>
+            <div className=" h-[30px] w-full sm:max-w-[150px]">
+              <Select className="border-none outline-none w-full h-full !min-w-full text-black dark:text-white bg-white dark:bg-[#383544] placeholder:text-[#cbcdca] !rounded-[0px] border !border-grey-200 hover:border-grey-300 focus:border-grey-300 focus:outline-none" value={tableFilter.status} onChange={handleInputChange} name="status" placeholder="All">
+
+                <MenuItem value="">All</MenuItem>
+                <MenuItem value="completed">Completed</MenuItem>
+                <MenuItem value="in progress">In progress</MenuItem>
+              </Select>
             </div>
           </div>
 
